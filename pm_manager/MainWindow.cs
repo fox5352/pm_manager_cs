@@ -20,6 +20,7 @@ namespace pm_manager
             this.FormBorderStyle = FormBorderStyle.Sizable;
 
             this.view = new ViewWindow();
+            this.Toggle_Window();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -41,10 +42,10 @@ namespace pm_manager
         {
 
         }
-
-        private void button1_Click(object sender, EventArgs e)
+        private void Toggle_Window()
         {
-            if (this.view.IsDisposed) {
+            if (this.view.IsDisposed)
+            {
                 this.view = new ViewWindow();
                 this.view.Show();
 
@@ -52,17 +53,24 @@ namespace pm_manager
                 return;
             }
 
-            if (!this.view.Visible) {
+            if (!this.view.Visible)
+            {
                 this.view.Show();
                 viewToggleBtn.Text = "Close view";
                 return;
             }
 
-            if (!this.view.IsDisposed && this.view.Visible){
+            if (!this.view.IsDisposed && this.view.Visible)
+            {
                 this.view.Hide();
                 viewToggleBtn.Text = "Open view";
                 return;
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Toggle_Window();
         }
     }
 }
