@@ -1,54 +1,77 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace pm_manager
 {
     public partial class DataView : UserControl
     {
-        public Image DataViewBackgroundImage { get; set; }
-        public string HeaderText { get; set; }
-
-        public string ContentText { get; set; }
-
-        private Label HeaderLabel;
-        private Label ContentLabel;
-
-        public void ImageWithHeaderContainer() {
-            this.BackgroundImage = null;
-            this.HeaderText = "Header Text";
-            this.ContentText = "Content Text";
-
-            this.HeaderLabel = new Label
-            {
-                Font = new Font("Microsoft Sans Serif", 19),
-                ForeColor = Color.White,
-                AutoSize = true,
-                TextAlign = ContentAlignment.TopLeft,
-                Dock = DockStyle.Top,
-                Height = 40
-            };
-
-            this.ContentLabel = new Label
-            {
-                Font = new Font("Microsoft Sans Serif", 14),
-                ForeColor = Color.White,
-                AutoSize = true,
-                TextAlign = ContentAlignment.MiddleCenter,
-                Dock = DockStyle.Fill
-            };
-        }
-
         public DataView()
-        {
-            InitializeComponent();
+        {   
+            this.InitializeComponent();
+            this.UpdateLayout();
         }
+        private void DataView_Resize(object sender, EventArgs e)
+        {
+            this.UpdateLayout();
+        }
+
+        private void UpdateLayout()
+        {
+            // Update header height (40% of container)
+            HeaderLabel.Height = (int)(this.Height * 0.1);
+            // ContentLabel will automatically fill remaining space due to Dock = Fill
+        }
+
+        
+        private void label1_Click(object sender, EventArgs e)
+        {
+        }
+
+        // updating functions
+        protected void Set_HeaderText(string text)
+        {
+            this.HeaderLabel.Text = text;
+        }
+        protected void Set_ContentText(string text)
+        {
+            this.ContentLabel.Text = text;
+        }
+        // public
+        public void Set_FG_Color(Color color)
+        {
+            this.HeaderLabel.ForeColor = color;
+            this.ContentLabel.ForeColor = color;
+        }
+
+        public void Set_Background_Image(string src)
+        {
+            try
+            {
+                // Load the image from the provided source path
+                var image = Image.FromFile(src);
+
+                // Set the image as the background
+                this.BackgroundImage = image;
+
+                // Optional: Set the background image layout to "Stretch" to fit the control
+                this.BackgroundImageLayout = ImageLayout.Stretch;
+            }
+            catch (Exception ex)
+            {
+                // Handle potential errors (e.g., file not found, invalid format)
+                MessageBox.Show($"Error loading image: {ex.Message}");
+            }
+        }
+
+        public void Set_Slide(Slide slide) {
+            this.Set_HeaderText(slide.HeaderText);
+            this.Set_ContentText(slide.ContentText);
+            if (slide.BgSrc != null)
+            {
+                this.Set_Background_Image(slide.BgSrc);
+            }
+        }
+      
     }
 }

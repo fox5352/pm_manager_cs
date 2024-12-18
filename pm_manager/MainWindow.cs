@@ -20,7 +20,6 @@ namespace pm_manager
             this.FormBorderStyle = FormBorderStyle.Sizable;
 
             this.view = new ViewWindow();
-            this.Toggle_Window();
         }
 
         private void Form1_Load(object sender, EventArgs e)

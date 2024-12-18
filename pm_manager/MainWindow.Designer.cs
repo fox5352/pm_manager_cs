@@ -35,8 +35,10 @@
             this.DataView = new System.Windows.Forms.Panel();
             this.PreView = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.PreviewPanel = new pm_manager.DataView();
             this.controls.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,7 +52,7 @@
             this.controls.Dock = System.Windows.Forms.DockStyle.Top;
             this.controls.Location = new System.Drawing.Point(0, 0);
             this.controls.Name = "controls";
-            this.controls.Size = new System.Drawing.Size(1350, 46);
+            this.controls.Size = new System.Drawing.Size(993, 46);
             this.controls.TabIndex = 0;
             this.controls.Paint += new System.Windows.Forms.PaintEventHandler(this.controls_Paint);
             // 
@@ -90,18 +92,18 @@
             // 
             this.DataView.AccessibleName = "playlists";
             this.DataView.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.DataView.Location = new System.Drawing.Point(0, 692);
+            this.DataView.Location = new System.Drawing.Point(0, 524);
             this.DataView.Name = "DataView";
-            this.DataView.Size = new System.Drawing.Size(1350, 37);
+            this.DataView.Size = new System.Drawing.Size(993, 37);
             this.DataView.TabIndex = 1;
             // 
             // PreView
             // 
             this.PreView.AccessibleName = "playlist panel";
             this.PreView.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.PreView.Location = new System.Drawing.Point(0, 465);
+            this.PreView.Location = new System.Drawing.Point(0, 297);
             this.PreView.Name = "PreView";
-            this.PreView.Size = new System.Drawing.Size(1350, 227);
+            this.PreView.Size = new System.Drawing.Size(993, 227);
             this.PreView.TabIndex = 2;
             // 
             // splitContainer1
@@ -109,27 +111,41 @@
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(0, 46);
             this.splitContainer1.Name = "splitContainer1";
-            this.splitContainer1.Size = new System.Drawing.Size(1350, 419);
-            this.splitContainer1.SplitterDistance = 670;
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.PreviewPanel);
+            this.splitContainer1.Size = new System.Drawing.Size(993, 251);
+            this.splitContainer1.SplitterDistance = 492;
             this.splitContainer1.TabIndex = 3;
+            // 
+            // PreviewPanel
+            // 
+            this.PreviewPanel.BackColor = System.Drawing.Color.White;
+            this.PreviewPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PreviewPanel.Location = new System.Drawing.Point(0, 0);
+            this.PreviewPanel.Name = "PreviewPanel";
+            this.PreviewPanel.Size = new System.Drawing.Size(497, 251);
+            this.PreviewPanel.TabIndex = 0;
             // 
             // MainWindow
             // 
             this.AccessibleName = "Window";
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(1350, 729);
+            this.ClientSize = new System.Drawing.Size(993, 561);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.PreView);
             this.Controls.Add(this.DataView);
             this.Controls.Add(this.controls);
             this.DoubleBuffered = true;
-            this.MinimumSize = new System.Drawing.Size(1366, 768);
+            this.MinimumSize = new System.Drawing.Size(800, 600);
             this.Name = "MainWindow";
             this.ShowIcon = false;
             this.Text = "Main Window";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.controls.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -145,6 +161,7 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
         public System.Windows.Forms.Button viewToggleBtn;
+        private DataView PreviewPanel;
     }
 }
 
