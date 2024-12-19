@@ -14,5 +14,4 @@ namespace pm_manager
         public string BgSrc { get; set; }
     }
 
-
 }
