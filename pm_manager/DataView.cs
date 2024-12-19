@@ -11,6 +11,7 @@ namespace pm_manager
             this.InitializeComponent();
             this.UpdateLayout();
         }
+
         private void DataView_Resize(object sender, EventArgs e)
         {
             this.UpdateLayout();
@@ -29,11 +30,11 @@ namespace pm_manager
         }
 
         // updating functions
-        protected void Set_HeaderText(string text)
+        public void Set_HeaderText(string text)
         {
             this.HeaderLabel.Text = text;
         }
-        protected void Set_ContentText(string text)
+        public void Set_ContentText(string text)
         {
             this.ContentLabel.Text = text;
         }
@@ -65,8 +66,14 @@ namespace pm_manager
         }
 
         public void Set_Slide(Slide slide) {
-            this.Set_HeaderText(slide.HeaderText);
-            this.Set_ContentText(slide.ContentText);
+            if (slide.HeaderText != null)
+            {
+                this.Set_HeaderText(slide.HeaderText);
+            }
+            if (slide.ContentText != null)
+            {
+                this.Set_ContentText(slide.ContentText);
+            }
             if (slide.BgSrc != null)
             {
                 this.Set_Background_Image(slide.BgSrc);

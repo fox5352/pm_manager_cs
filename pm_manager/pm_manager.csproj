@@ -56,6 +56,7 @@
     <Compile Include="DataView.Designer.cs">
       <DependentUpon>DataView.cs</DependentUpon>
     </Compile>
+    <Compile Include="DataViewHook.cs" />
     <Compile Include="ImageBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -69,6 +70,7 @@
     <Compile Include="MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="PlaylistHook.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsModel.cs" />

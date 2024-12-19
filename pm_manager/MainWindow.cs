@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace pm_manager
 {
@@ -12,6 +13,12 @@ namespace pm_manager
         private List<string> imagesFolders;
 
         private List<string> images = new List<string>();
+
+        private PlayListHook playlistHook = PlayListHook.Instance;
+        private DataViewHook dataViewHook = DataViewHook.Instance;
+
+        // hooks 
+        protected Image DataViewImage;
 
         public MainWindow()
         {
@@ -62,26 +69,8 @@ namespace pm_manager
                     Size = new Size(180, 130),
                     Margin = new Padding(13)
                 };
+
                 imageBox.LoadImage(imagePath);
-                //Panel item = new Panel
-
-                //{
-                //    Size = new Size(160, 120), // Adjust size for 3 columns
-                //    BackColor = Color.LightBlue,
-                //    BorderStyle = BorderStyle.FixedSingle,
-                //    Margin = new Padding(14) // Add spacing between items
-                //};
-
-                //// Add a label to display the item number
-                //Label label = new Label
-                //{
-                //    Text = $"Item {imagePath}",
-                //    Dock = DockStyle.Fill,
-                //    TextAlign = ContentAlignment.MiddleCenter,
-                //    Font = new Font("Arial", 12, FontStyle.Bold)
-                //};
-
-                //item.Controls.Add(label);
 
                 this.ImagesViewContainer.Controls.Add(imageBox);
             }
@@ -137,10 +126,14 @@ namespace pm_manager
         private void button1_Click(object sender, EventArgs e)
         {
             this.Toggle_Window();
+            Console.WriteLine("testing");
+            Image test = Image.FromFile(this.images[0]);
+            this.DataViewImage = test;
         }
 
         private void AddImageBtn_Click(object sender, EventArgs e)
         {
+            Console.WriteLine("Help !");
             using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
             {
                 folderBrowserDialog.Description = "Select a Folder Containing Images";
@@ -155,6 +148,20 @@ namespace pm_manager
                 }
             }
 
+        }
+
+        private void LiveToggleBtn_Click(object sender, EventArgs e)
+        {
+            bool current = this.dataViewHook.toggle_isLive();
+            if (current)
+            {
+                this.LiveToggleBtn.ForeColor = Color.White;
+                this.LiveToggleBtn.BackColor = Color.Crimson;
+            }else
+            {
+                this.LiveToggleBtn.ForeColor = Color.Black;
+                this.LiveToggleBtn.BackColor = Color.Gainsboro;
+            }
         }
     }
 }

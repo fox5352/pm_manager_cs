@@ -30,7 +30,7 @@
         {
             this.controls = new System.Windows.Forms.Panel();
             this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.LiveToggleBtn = new System.Windows.Forms.Button();
             this.viewToggleBtn = new System.Windows.Forms.Button();
             this.DataView = new System.Windows.Forms.Panel();
             this.PreView = new System.Windows.Forms.Panel();
@@ -58,7 +58,7 @@
             this.controls.BackColor = System.Drawing.Color.White;
             this.controls.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.controls.Controls.Add(this.button3);
-            this.controls.Controls.Add(this.button2);
+            this.controls.Controls.Add(this.LiveToggleBtn);
             this.controls.Controls.Add(this.viewToggleBtn);
             this.controls.Dock = System.Windows.Forms.DockStyle.Top;
             this.controls.Location = new System.Drawing.Point(0, 0);
@@ -69,34 +69,43 @@
             // 
             // button3
             // 
+            this.button3.BackColor = System.Drawing.Color.Gainsboro;
+            this.button3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button3.Location = new System.Drawing.Point(174, 12);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 2;
             this.button3.Text = "button3";
-            this.button3.UseVisualStyleBackColor = true;
+            this.button3.UseVisualStyleBackColor = false;
             // 
-            // button2
+            // LiveToggleBtn
             // 
-            this.button2.Location = new System.Drawing.Point(93, 12);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "button2";
-            this.button2.UseVisualStyleBackColor = true;
+            this.LiveToggleBtn.BackColor = System.Drawing.Color.Gainsboro;
+            this.LiveToggleBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.LiveToggleBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.LiveToggleBtn.Location = new System.Drawing.Point(93, 12);
+            this.LiveToggleBtn.Name = "LiveToggleBtn";
+            this.LiveToggleBtn.Size = new System.Drawing.Size(75, 23);
+            this.LiveToggleBtn.TabIndex = 1;
+            this.LiveToggleBtn.Text = "isLive";
+            this.LiveToggleBtn.UseVisualStyleBackColor = false;
+            this.LiveToggleBtn.Click += new System.EventHandler(this.LiveToggleBtn_Click);
             // 
             // viewToggleBtn
             // 
             this.viewToggleBtn.AccessibleName = "open window";
             this.viewToggleBtn.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.viewToggleBtn.BackColor = System.Drawing.Color.Gainsboro;
             this.viewToggleBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.viewToggleBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.viewToggleBtn.Location = new System.Drawing.Point(12, 12);
             this.viewToggleBtn.Name = "viewToggleBtn";
             this.viewToggleBtn.Size = new System.Drawing.Size(75, 23);
             this.viewToggleBtn.TabIndex = 0;
             this.viewToggleBtn.Tag = "ViewToggleBtn";
             this.viewToggleBtn.Text = "Start view";
-            this.viewToggleBtn.UseVisualStyleBackColor = true;
+            this.viewToggleBtn.UseVisualStyleBackColor = false;
             this.viewToggleBtn.Click += new System.EventHandler(this.button1_Click);
             // 
             // DataView
@@ -111,7 +120,7 @@
             // 
             // PreView
             // 
-            this.PreView.AccessibleName = "playlist panel";
+            this.PreView.AccessibleName = "playlistHook panel";
             this.PreView.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.PreView.Location = new System.Drawing.Point(0, 308);
             this.PreView.Name = "PreView";
@@ -248,7 +257,7 @@
         private System.Windows.Forms.Panel PreView;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button LiveToggleBtn;
         public System.Windows.Forms.Button viewToggleBtn;
         private DataView PreviewPanel;
         private System.Windows.Forms.TabControl TabView;
