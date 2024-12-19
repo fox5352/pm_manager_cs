@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,9 +13,15 @@ namespace pm_manager
 {
     public partial class ImageBox : UserControl
     {
+        private readonly Timer UpdateTimer;
+
         public ImageBox()
         {
             InitializeComponent();
+
+            this.UpdateTimer = new Timer { Interval = 33 };
+            this.UpdateTimer.Tick += (sender, e) => this.Update_UI();
+            this.UpdateTimer.Start();
         }
 
         public void LoadImage(string imagePath)
@@ -34,6 +41,10 @@ namespace pm_manager
             {
                 MessageBox.Show($"Error loading image: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+        private void Update_UI()
+        {
+            
         }
     }
 }
