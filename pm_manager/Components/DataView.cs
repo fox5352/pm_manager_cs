@@ -10,6 +10,8 @@ namespace pm_manager
 
         private readonly bool preview;
 
+        private DataViewHook dataViewHook = DataViewHook.Instance;
+
         public DataView(bool preViewPanel=false)
         {
             this.preview = preViewPanel;
@@ -91,7 +93,10 @@ namespace pm_manager
 
         private void Update_UI()
         {
+            if (this.preview || this.dataViewHook.get_isLive())
+            {
 
+            }
         }
     }
 }
