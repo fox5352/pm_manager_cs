@@ -49,41 +49,41 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataTypes.cs" />
-    <Compile Include="DataView.cs">
+    <Compile Include="Lib\DataTypes.cs" />
+    <Compile Include="Components\DataView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="DataView.Designer.cs">
+    <Compile Include="Components\DataView.Designer.cs">
       <DependentUpon>DataView.cs</DependentUpon>
     </Compile>
-    <Compile Include="DataViewHook.cs" />
-    <Compile Include="ImageBox.cs">
+    <Compile Include="Lib\DataViewHook.cs" />
+    <Compile Include="Components\ImageBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ImageBox.Designer.cs">
+    <Compile Include="Components\ImageBox.Designer.cs">
       <DependentUpon>ImageBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="ImageSearch.cs" />
+    <Compile Include="Lib\ImageSearch.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlaylistHook.cs" />
+    <Compile Include="Lib\PlaylistHook.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SettingsModel.cs" />
+    <Compile Include="Lib\SettingsModel.cs" />
     <Compile Include="View.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="View.Designer.cs">
       <DependentUpon>View.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="DataView.resx">
+    <EmbeddedResource Include="Components\DataView.resx">
       <DependentUpon>DataView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ImageBox.resx">
+    <EmbeddedResource Include="Components\ImageBox.resx">
       <DependentUpon>ImageBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
