@@ -6,10 +6,13 @@ namespace pm_manager
 {
     public partial class DataView : UserControl
     {
-        public DataView()
-        {   
+        private bool preview;
+        public DataView(bool preViewPanel=false)
+        {
+            this.preview = preViewPanel;
             this.InitializeComponent();
             this.UpdateLayout();
+
         }
 
         private void DataView_Resize(object sender, EventArgs e)
