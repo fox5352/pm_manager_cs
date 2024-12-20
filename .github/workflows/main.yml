@@ -5,6 +5,11 @@ on:
     branches: [ master ]
   workflow_dispatch:
 
+# Add permissions block at workflow level
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   build:
     runs-on: windows-latest
