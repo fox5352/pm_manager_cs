@@ -6,13 +6,19 @@ namespace pm_manager
 {
     public partial class DataView : UserControl
     {
-        private bool preview;
+        private readonly Timer UpdateTimer;
+
+        private readonly bool preview;
+
         public DataView(bool preViewPanel=false)
         {
             this.preview = preViewPanel;
             this.InitializeComponent();
             this.UpdateLayout();
 
+            this.UpdateTimer = new Timer { Interval = 33 };
+            this.UpdateTimer.Tick += (sender, e) => this.Update_UI();
+            this.UpdateTimer.Start();
         }
 
         private void DataView_Resize(object sender, EventArgs e)
@@ -82,6 +88,10 @@ namespace pm_manager
                 this.Set_Background_Image(slide.BgSrc);
             }
         }
-      
+
+        private void Update_UI()
+        {
+
+        }
     }
 }
