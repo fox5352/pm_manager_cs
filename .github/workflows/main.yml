@@ -5,7 +5,6 @@ on:
     branches: [ master ]
   workflow_dispatch:
 
-# Add permissions block at workflow level
 permissions:
   contents: write
   packages: write
@@ -37,27 +36,19 @@ jobs:
         copy pm_manager\bin\Release\*.dll Release\
       shell: cmd
       
+    - name: Zip Release
+      run: |
+        7z a -tzip Release.zip .\Release\*
+      shell: cmd
+      
     - name: Create GitHub Release
       id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
+        files: Release.zip
+        name: Release v${{ github.run_number }}
         tag_name: v${{ github.run_number }}
-        release_name: Release v${{ github.run_number }}
         draft: false
         prerelease: false
-        
-    - name: Zip Release
-      run: Compress-Object -Path Release -DestinationPath Release.zip
-      shell: pwsh
-      
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./Release.zip
-        asset_name: pm_manager_v${{ github.run_number }}.zip
-        asset_content_type: application/zip
