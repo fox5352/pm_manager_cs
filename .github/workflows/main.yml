@@ -3,6 +3,8 @@ name: Build and Publish WinForms App
 on:
   push:
     branches: [ master ]
+    tags:
+      - 'v*.*.*'
   workflow_dispatch:
 
 permissions:
@@ -15,6 +17,28 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Get Version
+      id: get_version
+      shell: powershell
+      run: |
+        # Try to get version from git tag
+        $tag = git describe --tags --abbrev=0
+        if ($tag) {
+          $version = $tag.TrimStart('v')
+        } else {
+          # Default to version from AssemblyInfo if no tag
+          $assemblyFile = "pm_manager\Properties\AssemblyInfo.cs"
+          $pattern = '\[assembly: AssemblyVersion\("(.*)"\)\]'
+          $content = Get-Content $assemblyFile
+          $version = $content | Select-String -Pattern $pattern | ForEach-Object { $_.Matches.Groups[1].Value }
+          if (!$version) {
+            $version = "1.0.0"
+          }
+        }
+        echo "VERSION=$version" >> $env:GITHUB_OUTPUT
     
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
@@ -46,9 +70,17 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: Release.zip
-        name: Release v${{ github.run_number }}
-        tag_name: v${{ github.run_number }}
+        name: Release v${{ steps.get_version.outputs.VERSION }}
+        tag_name: v${{ steps.get_version.outputs.VERSION }}
         draft: false
         prerelease: false
+        body: |
+          Release v${{ steps.get_version.outputs.VERSION }}
+          
+          ## What's Changed
+          * Automated release from master branch
+          
+          ## Installation
+          Download the zip file and extract to run the application.
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
