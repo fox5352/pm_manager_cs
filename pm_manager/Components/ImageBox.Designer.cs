@@ -43,15 +43,19 @@
             this.ImageBoxContainer.Size = new System.Drawing.Size(150, 120);
             this.ImageBoxContainer.TabIndex = 0;
             this.ImageBoxContainer.TabStop = false;
+            //this.ImageBoxContainer.Click += new System.EventHandler(this.imageBoxContainer_DoubleClick);
+            this.ImageBoxContainer.DoubleClick += new System.EventHandler(this.imageBoxContainer_DoubleClick);
             // 
             // ImageBox
             // 
+            this.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Transparent;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.ImageBoxContainer);
+            this.Cursor = System.Windows.Forms.Cursors.Default;
             this.DoubleBuffered = true;
             this.ForeColor = System.Drawing.Color.Transparent;
             this.Margin = new System.Windows.Forms.Padding(10);

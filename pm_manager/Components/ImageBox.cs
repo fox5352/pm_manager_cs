@@ -1,27 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace pm_manager
 {
     public partial class ImageBox : UserControl
     {
-        private readonly Timer UpdateTimer;
+        private readonly PlayListHook playListHook = PlayListHook.Instance;
 
+        private string image;
         public ImageBox()
         {
             InitializeComponent();
-
-            this.UpdateTimer = new Timer { Interval = 33 };
-            this.UpdateTimer.Tick += (sender, e) => this.Update_UI();
-            this.UpdateTimer.Start();
         }
 
         public void LoadImage(string imagePath)
@@ -32,6 +22,8 @@ namespace pm_manager
                 {
                     throw new ArgumentException("Image path cannot be null or empty.", nameof(imagePath));
                 }
+                
+                this.image = imagePath;
 
                 Image image = Image.FromFile(imagePath);
                 ImageBoxContainer.Image = image;
@@ -42,9 +34,10 @@ namespace pm_manager
                 MessageBox.Show($"Error loading image: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void Update_UI()
+        private void imageBoxContainer_DoubleClick(object sender, EventArgs e) 
         {
-            
+            this.playListHook.set_BgSrc(this.image);
         }
+
     }
 }

@@ -14,6 +14,7 @@ namespace pm_manager
     {
         public int? Index { get; set; }
         public List<Slide> Slides { get; set; }
+        public string BgSrc { get; set; }
     }
 
     public sealed class PlayListHook
@@ -86,6 +87,15 @@ namespace pm_manager
         public void delete_slide(string id)
         {
             this.playlist.Slides.RemoveAll((slide) => slide.Id == id);
+        }
+    
+        public string get_BgSrc()
+        {
+            return this.playlist.BgSrc;
+        }
+        public void set_BgSrc(string image)
+        {
+            this.playlist.BgSrc = image;
         }
     }
 }
