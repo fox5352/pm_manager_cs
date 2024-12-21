@@ -1,0 +1,86 @@
+name: Build and Publish WinForms App
+
+on:
+  push:
+    branches: [ master ]
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Get Version
+      id: get_version
+      shell: powershell
+      run: |
+        # Try to get version from git tag
+        $tag = git describe --tags --abbrev=0
+        if ($tag) {
+          $version = $tag.TrimStart('v')
+        } else {
+          # Default to version from AssemblyInfo if no tag
+          $assemblyFile = "pm_manager\Properties\AssemblyInfo.cs"
+          $pattern = '\[assembly: AssemblyVersion\("(.*)"\)\]'
+          $content = Get-Content $assemblyFile
+          $version = $content | Select-String -Pattern $pattern | ForEach-Object { $_.Matches.Groups[1].Value }
+          if (!$version) {
+            $version = "1.0.0"
+          }
+        }
+        echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+    
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+      
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2
+      
+    - name: Restore NuGet packages
+      run: nuget restore pm_manager.sln
+      
+    - name: Build application
+      run: msbuild pm_manager.sln /p:Configuration=Release /p:Platform="Any CPU" /p:TargetFrameworkVersion=v4.8
+      
+    - name: Create Release Folder
+      run: |
+        mkdir Release
+        copy pm_manager\bin\Release\*.exe Release\
+        copy pm_manager\bin\Release\*.config Release\
+        copy pm_manager\bin\Release\*.dll Release\
+      shell: cmd
+      
+    - name: Zip Release
+      run: |
+        7z a -tzip Release.zip .\Release\*
+      shell: cmd
+      
+    - name: Create GitHub Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: Release.zip
+        name: Release v${{ steps.get_version.outputs.VERSION }}
+        tag_name: v${{ steps.get_version.outputs.VERSION }}
+        draft: false
+        prerelease: false
+        body: |
+          Release v${{ steps.get_version.outputs.VERSION }}
+          
+          ## What's Changed
+          * Automated release from master branch
+          
+          ## Installation
+          Download the zip file and extract to run the application.
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
