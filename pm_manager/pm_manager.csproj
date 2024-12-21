@@ -49,6 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Accordion.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Components\Accordion.Designer.cs">
+      <DependentUpon>Accordion.cs</DependentUpon>
+    </Compile>
     <Compile Include="Lib\DataTypes.cs" />
     <Compile Include="Components\DataView.cs">
       <SubType>UserControl</SubType>
