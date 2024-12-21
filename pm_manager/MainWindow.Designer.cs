@@ -43,9 +43,9 @@
             this.ImageViewControls = new System.Windows.Forms.Panel();
             this.AddImageBtn = new System.Windows.Forms.Button();
             this.LyricsView = new System.Windows.Forms.TabPage();
+            this.LyricViewContainer = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.AddBtn = new System.Windows.Forms.Button();
-            this.LyricViewContainer = new System.Windows.Forms.FlowLayoutPanel();
             this.controls.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -57,6 +57,15 @@
             this.LyricsView.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // PreviewPanel
+            // 
+            this.PreviewPanel.BackColor = System.Drawing.Color.White;
+            this.PreviewPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PreviewPanel.Location = new System.Drawing.Point(0, 0);
+            this.PreviewPanel.Name = "PreviewPanel";
+            this.PreviewPanel.Size = new System.Drawing.Size(547, 260);
+            this.PreviewPanel.TabIndex = 0;
             // 
             // controls
             // 
@@ -231,6 +240,16 @@
             this.LyricsView.Text = "LyricsView";
             this.LyricsView.UseVisualStyleBackColor = true;
             // 
+            // LyricViewContainer
+            // 
+            this.LyricViewContainer.AutoScroll = true;
+            this.LyricViewContainer.BackColor = System.Drawing.Color.Gainsboro;
+            this.LyricViewContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LyricViewContainer.Name = "LyricViewContainer";
+            this.LyricViewContainer.Location = new System.Drawing.Point(0, 28);
+            this.LyricViewContainer.Size = new System.Drawing.Size(533, 206);
+            this.LyricViewContainer.TabIndex = 1;
+            // 
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -250,26 +269,6 @@
             this.AddBtn.Text = "Add";
             this.AddBtn.UseVisualStyleBackColor = true;
             this.AddBtn.Click += new System.EventHandler(this.AddLyricBtn_Click);
-            // 
-            // PreviewPanel
-            // 
-            this.PreviewPanel.BackColor = System.Drawing.Color.White;
-            this.PreviewPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.PreviewPanel.Location = new System.Drawing.Point(0, 0);
-            this.PreviewPanel.Name = "PreviewPanel";
-            this.PreviewPanel.Size = new System.Drawing.Size(547, 260);
-            this.PreviewPanel.TabIndex = 0;
-            // 
-            // LyricViewContainer
-            // 
-            this.LyricViewContainer.BackColor = System.Drawing.Color.Gainsboro;
-            this.LyricViewContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LyricViewContainer.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.LyricViewContainer.Location = new System.Drawing.Point(0, 28);
-            this.LyricViewContainer.Name = "LyricViewContainer";
-            this.LyricViewContainer.Size = new System.Drawing.Size(533, 206);
-            this.LyricViewContainer.TabIndex = 1;
-            this.LyricViewContainer.WrapContents = false;
             // 
             // MainWindow
             // 
@@ -319,7 +318,7 @@
         private System.Windows.Forms.TabPage LyricsView;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button AddBtn;
-        private System.Windows.Forms.FlowLayoutPanel LyricViewContainer;
+        private System.Windows.Forms.Panel LyricViewContainer;
     }
 }
 

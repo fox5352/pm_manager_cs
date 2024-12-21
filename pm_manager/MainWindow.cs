@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using pm_manager.Components;
 
 namespace pm_manager
 {
@@ -37,6 +38,7 @@ namespace pm_manager
 
             // ui components initialization
             this.Render_ImageViewContainer();
+            this.Render_LyricViewContainer();
         }
 
         // helper methods
@@ -94,6 +96,19 @@ namespace pm_manager
             this.Get_Songs_from_folder();
             this.LyricViewContainer.Controls.Clear();
 
+            int yPosition = 0;
+            foreach (string songFilePath in this.songs)
+            {
+                LyricBtnContainer lyricBtn = new LyricBtnContainer();
+                lyricBtn.Location = new Point(0, yPosition);
+                lyricBtn.Width = this.LyricViewContainer.ClientSize.Width;
+                lyricBtn.Height = 30;
+                lyricBtn.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+                lyricBtn.LoadText(songFilePath);
+
+                this.LyricViewContainer.Controls.Add(lyricBtn);
+                yPosition += lyricBtn.Height + 3; // 3 pixels gap between buttons
+            }
         }
 
         // UI events
@@ -169,16 +184,17 @@ namespace pm_manager
         // lyric view
         private void AddLyricBtn_Click(object sender, EventArgs e)
         {
+            Console.WriteLine("sdawda");
             using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
             {
-                folderBrowserDialog.Description = "Select a Folder Containing Lyric files";
+                folderBrowserDialog.Description = "Select a Folder Containing Lyrics";
 
                 if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
                 {
                     string selectedFolderPath = folderBrowserDialog.SelectedPath;
 
                     this.settings.Update_Setting<string>(SettingsFields.LyricsPath, selectedFolderPath);
-                    this.Render_ImageViewContainer();
+                    this.Render_LyricViewContainer();
                 }
             }
         }
