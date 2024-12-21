@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.PreviewPanel = new DataView(true);
             this.controls = new System.Windows.Forms.Panel();
             this.button3 = new System.Windows.Forms.Button();
             this.LiveToggleBtn = new System.Windows.Forms.Button();
@@ -41,7 +42,10 @@
             this.ImagesViewContainer = new System.Windows.Forms.FlowLayoutPanel();
             this.ImageViewControls = new System.Windows.Forms.Panel();
             this.AddImageBtn = new System.Windows.Forms.Button();
-            this.PreviewPanel = new pm_manager.DataView(true);
+            this.LyricsView = new System.Windows.Forms.TabPage();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.AddBtn = new System.Windows.Forms.Button();
+            this.LyricViewContainer = new System.Windows.Forms.FlowLayoutPanel();
             this.controls.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -50,6 +54,8 @@
             this.TabView.SuspendLayout();
             this.ImageView.SuspendLayout();
             this.ImageViewControls.SuspendLayout();
+            this.LyricsView.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // controls
@@ -65,7 +71,6 @@
             this.controls.Name = "controls";
             this.controls.Size = new System.Drawing.Size(1096, 46);
             this.controls.TabIndex = 0;
-            this.controls.Paint += new System.Windows.Forms.PaintEventHandler(this.controls_Paint);
             // 
             // button3
             // 
@@ -106,7 +111,7 @@
             this.viewToggleBtn.Tag = "ViewToggleBtn";
             this.viewToggleBtn.Text = "Start view";
             this.viewToggleBtn.UseVisualStyleBackColor = false;
-            this.viewToggleBtn.Click += new System.EventHandler(this.button1_Click);
+            this.viewToggleBtn.Click += new System.EventHandler(this.toggleWindow_Click);
             // 
             // DataView
             // 
@@ -150,6 +155,7 @@
             // 
             this.TabView.Controls.Add(this.BibleView);
             this.TabView.Controls.Add(this.ImageView);
+            this.TabView.Controls.Add(this.LyricsView);
             this.TabView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TabView.Location = new System.Drawing.Point(0, 0);
             this.TabView.Name = "TabView";
@@ -213,6 +219,38 @@
             this.AddImageBtn.UseVisualStyleBackColor = true;
             this.AddImageBtn.Click += new System.EventHandler(this.AddImageBtn_Click);
             // 
+            // LyricsView
+            // 
+            this.LyricsView.Controls.Add(this.LyricViewContainer);
+            this.LyricsView.Controls.Add(this.panel1);
+            this.LyricsView.Location = new System.Drawing.Point(4, 22);
+            this.LyricsView.Margin = new System.Windows.Forms.Padding(0);
+            this.LyricsView.Name = "LyricsView";
+            this.LyricsView.Size = new System.Drawing.Size(533, 234);
+            this.LyricsView.TabIndex = 2;
+            this.LyricsView.Text = "LyricsView";
+            this.LyricsView.UseVisualStyleBackColor = true;
+            // 
+            // panel1
+            // 
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.AddBtn);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(533, 28);
+            this.panel1.TabIndex = 0;
+            // 
+            // AddBtn
+            // 
+            this.AddBtn.Location = new System.Drawing.Point(7, 2);
+            this.AddBtn.Name = "AddBtn";
+            this.AddBtn.Size = new System.Drawing.Size(75, 22);
+            this.AddBtn.TabIndex = 0;
+            this.AddBtn.Text = "Add";
+            this.AddBtn.UseVisualStyleBackColor = true;
+            this.AddBtn.Click += new System.EventHandler(this.AddLyricBtn_Click);
+            // 
             // PreviewPanel
             // 
             this.PreviewPanel.BackColor = System.Drawing.Color.White;
@@ -221,6 +259,17 @@
             this.PreviewPanel.Name = "PreviewPanel";
             this.PreviewPanel.Size = new System.Drawing.Size(547, 260);
             this.PreviewPanel.TabIndex = 0;
+            // 
+            // LyricViewContainer
+            // 
+            this.LyricViewContainer.BackColor = System.Drawing.Color.Gainsboro;
+            this.LyricViewContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LyricViewContainer.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.LyricViewContainer.Location = new System.Drawing.Point(0, 28);
+            this.LyricViewContainer.Name = "LyricViewContainer";
+            this.LyricViewContainer.Size = new System.Drawing.Size(533, 206);
+            this.LyricViewContainer.TabIndex = 1;
+            this.LyricViewContainer.WrapContents = false;
             // 
             // MainWindow
             // 
@@ -237,7 +286,6 @@
             this.Name = "MainWindow";
             this.ShowIcon = false;
             this.Text = "Main Window";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.controls.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
@@ -246,6 +294,8 @@
             this.TabView.ResumeLayout(false);
             this.ImageView.ResumeLayout(false);
             this.ImageViewControls.ResumeLayout(false);
+            this.LyricsView.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -266,6 +316,10 @@
         private System.Windows.Forms.Panel ImageViewControls;
         private System.Windows.Forms.Button AddImageBtn;
         private System.Windows.Forms.FlowLayoutPanel ImagesViewContainer;
+        private System.Windows.Forms.TabPage LyricsView;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button AddBtn;
+        private System.Windows.Forms.FlowLayoutPanel LyricViewContainer;
     }
 }
 

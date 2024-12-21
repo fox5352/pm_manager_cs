@@ -49,11 +49,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\Accordion.cs">
-      <SubType>Component</SubType>
+    <Compile Include="Components\LyricBtn.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Components\Accordion.Designer.cs">
-      <DependentUpon>Accordion.cs</DependentUpon>
+    <Compile Include="Components\LyricBtn.Designer.cs">
+      <DependentUpon>LyricBtn.cs</DependentUpon>
     </Compile>
     <Compile Include="Lib\DataTypes.cs" />
     <Compile Include="Components\DataView.cs">
@@ -69,7 +69,7 @@
     <Compile Include="Components\ImageBox.Designer.cs">
       <DependentUpon>ImageBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Lib\ImageSearch.cs" />
+    <Compile Include="Lib\SearchFuncs.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -91,6 +91,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Components\ImageBox.resx">
       <DependentUpon>ImageBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Components\LyricBtn.resx">
+      <DependentUpon>LyricBtn.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>

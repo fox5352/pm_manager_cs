@@ -11,18 +11,22 @@ namespace pm_manager
         private SettingsModel settings;
         private List<string> imagesFolders;
 
+        // tabs data
         private List<string> images = new List<string>();
+        private List<string> songs = new List<string>();
 
-        private PlayListHook playlistHook = PlayListHook.Instance;
-        private DataViewHook dataViewHook = DataViewHook.Instance;
 
         // hooks 
         protected Image DataViewImage;
+        private PlayListHook playlistHook = PlayListHook.Instance;
+        private DataViewHook dataViewHook = DataViewHook.Instance;
 
         public MainWindow()
         {
+            // BUG: this stays here because visual sudtio keeps removing this from the design file :( this.PreviewPanel = new DataView(true);
             // Window configuration
             InitializeComponent();
+            //InitializePreviewPanel();
             this.Size = new Size(1366, 768);
             this.FormBorderStyle = FormBorderStyle.Sizable;
             // settings configuration
@@ -36,25 +40,34 @@ namespace pm_manager
         }
 
         // helper methods
-        protected void Get_Images_from_folders()
+        private void Get_Images_from_folders()
         {
             this.imagesFolders = this.settings.Get_Settings().ImageFolders;
-            ImageSearch search_helper = new ImageSearch();
 
             foreach (string path in this.imagesFolders) {
-                string[] data = search_helper.Get_Images_Paths(path);
+                string[] data = new SearchFuncs().Search_dir(SearchTypes.Image,path);
 
-                foreach(string item in data)
+                for (int index = 0; index < data.Length; index++)
                 {
-                    this.images.Add(item);
+                    this.images.Add(data[index]);
                 }
             }
         }
 
+        private void Get_Songs_from_folder()
+        {
+            string songsFolder = this.settings.Get_Settings().LyricsPath;
+
+            string[] data = new SearchFuncs().Search_dir(SearchTypes.Text, songsFolder);
+
+            foreach (string file in data)
+            {
+                this.songs.Add(file);
+            }
+        }
+
         // ui methods
-
         // tab view components
-
         // image view container
         protected void Render_ImageViewContainer()
         {
@@ -75,27 +88,15 @@ namespace pm_manager
             }
         }
 
+        // lyric view conttainer
+        protected void Render_LyricViewContainer() 
+        {
+            this.Get_Songs_from_folder();
+            this.LyricViewContainer.Controls.Clear();
+
+        }
+
         // UI events
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void toolStripButton3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void controls_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-        
         private void Toggle_Window()
         {
             if (this.view.IsDisposed)
@@ -122,7 +123,7 @@ namespace pm_manager
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void toggleWindow_Click(object sender, EventArgs e)
         {
             this.Toggle_Window();
             Console.WriteLine("testing");
@@ -130,9 +131,25 @@ namespace pm_manager
             this.DataViewImage = test;
         }
 
+        private void LiveToggleBtn_Click(object sender, EventArgs e)
+        {
+            bool current = this.dataViewHook.toggle_isLive();
+            if (current)
+            {
+                this.LiveToggleBtn.ForeColor = Color.White;
+                this.LiveToggleBtn.BackColor = Color.Crimson;
+            }else
+            {
+                this.LiveToggleBtn.ForeColor = Color.Black;
+                this.LiveToggleBtn.BackColor = Color.Gainsboro;
+            }
+        }
+
+        // tab methods
+
+        // image view
         private void AddImageBtn_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("Help !");
             using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
             {
                 folderBrowserDialog.Description = "Select a Folder Containing Images";
@@ -149,17 +166,20 @@ namespace pm_manager
 
         }
 
-        private void LiveToggleBtn_Click(object sender, EventArgs e)
+        // lyric view
+        private void AddLyricBtn_Click(object sender, EventArgs e)
         {
-            bool current = this.dataViewHook.toggle_isLive();
-            if (current)
+            using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
             {
-                this.LiveToggleBtn.ForeColor = Color.White;
-                this.LiveToggleBtn.BackColor = Color.Crimson;
-            }else
-            {
-                this.LiveToggleBtn.ForeColor = Color.Black;
-                this.LiveToggleBtn.BackColor = Color.Gainsboro;
+                folderBrowserDialog.Description = "Select a Folder Containing Lyric files";
+
+                if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string selectedFolderPath = folderBrowserDialog.SelectedPath;
+
+                    this.settings.Update_Setting<string>(SettingsFields.LyricsPath, selectedFolderPath);
+                    this.Render_ImageViewContainer();
+                }
             }
         }
     }
