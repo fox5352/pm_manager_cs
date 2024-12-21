@@ -41,7 +41,7 @@
             this.ImagesViewContainer = new System.Windows.Forms.FlowLayoutPanel();
             this.ImageViewControls = new System.Windows.Forms.Panel();
             this.AddImageBtn = new System.Windows.Forms.Button();
-            this.PreviewPanel = new pm_manager.DataView(false);
+            this.PreviewPanel = new pm_manager.DataView(true);
             this.controls.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();

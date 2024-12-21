@@ -18,8 +18,5 @@ namespace pm_manager
             this.Size = new Size(1366, 768);
             this.FormBorderStyle = FormBorderStyle.Sizable;
         }
-        public void UpdateView(string data) {
-            System.Console.WriteLine(data);
-        }
     }
 }

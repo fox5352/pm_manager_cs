@@ -10,6 +10,7 @@ namespace pm_manager
 
         private readonly bool preview;
 
+        private PlayListHook playListHook = PlayListHook.Instance;
         private DataViewHook dataViewHook = DataViewHook.Instance;
 
         public DataView(bool preViewPanel=false)
@@ -91,12 +92,47 @@ namespace pm_manager
             }
         }
 
+        public void Update_view(Slide slide)
+        {
+            if (slide.HeaderText != null)
+            {
+                this.Set_HeaderText(slide.HeaderText);
+            }
+            if (slide.ContentText != null)
+            {
+                this.Set_ContentText(slide.ContentText);
+            }
+            if (slide.BgSrc != null)
+            {
+                this.Set_Background_Image(slide.BgSrc);
+            }
+        }
+
         private void Update_UI()
         {
             if (this.preview || this.dataViewHook.get_isLive())
             {
+                var index = this.playListHook.get_index();
+                if (index.HasValue)
+                {
+                    var slide = this.playListHook.get_slide(index.Value);
+                    if (slide.HasValue)
+                    {
+                        this.Update_view(slide.Value);
+                    }
+                }
+                else
+                {
 
+                    this.ClearLabels();
+                }
             }
+        }
+
+        private void ClearLabels()
+        {
+            this.HeaderLabel.Text = string.Empty;
+            this.ContentLabel.Text = string.Empty;
         }
     }
 }

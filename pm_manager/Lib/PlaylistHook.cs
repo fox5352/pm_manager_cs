@@ -12,7 +12,7 @@ namespace pm_manager
 
     public struct Playlist
     {
-        public int Index { get; set; }
+        public int? Index { get; set; }
         public List<Slide> Slides { get; set; }
     }
 
@@ -28,6 +28,7 @@ namespace pm_manager
         {
             this.playlist = new Playlist()
             {
+                Index = null,
                 Slides = new List<Slide>()
             };
         }
