@@ -28,14 +28,28 @@
         /// </summary>
         private void InitializeComponent()
         {
+            //this.LiveDataView = new pm_manager.DataView(false);
+
+            this.LiveDataView = new pm_manager.DataView(false);
             this.SuspendLayout();
+            // 
+            // LiveDataView
+            // 
+            this.LiveDataView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.LiveDataView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LiveDataView.Location = new System.Drawing.Point(0, 0);
+            this.LiveDataView.Name = "LiveDataView";
+            this.LiveDataView.Size = new System.Drawing.Size(1459, 679);
+            this.LiveDataView.TabIndex = 0;
             // 
             // ViewWindow
             // 
             this.AccessibleName = "View";
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1459, 679);
+            this.Controls.Add(this.LiveDataView);
             this.MinimumSize = new System.Drawing.Size(800, 600);
             this.Name = "ViewWindow";
             this.ShowIcon = false;
@@ -48,5 +62,7 @@
         }
 
         #endregion
+
+        private DataView LiveDataView;
     }
 }
