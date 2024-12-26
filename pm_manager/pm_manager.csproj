@@ -49,6 +49,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\LyricBtn.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Components\LyricBtn.Designer.cs">
+      <DependentUpon>LyricBtn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Components\SlideBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Components\SlideBox.Designer.cs">
+      <DependentUpon>SlideBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Lib\ClickManager.cs" />
     <Compile Include="Lib\DataTypes.cs" />
     <Compile Include="Components\DataView.cs">
       <SubType>UserControl</SubType>
@@ -63,7 +76,7 @@
     <Compile Include="Components\ImageBox.Designer.cs">
       <DependentUpon>ImageBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Lib\ImageSearch.cs" />
+    <Compile Include="Lib\SearchFuncs.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -85,6 +98,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Components\ImageBox.resx">
       <DependentUpon>ImageBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Components\LyricBtn.resx">
+      <DependentUpon>LyricBtn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Components\SlideBox.resx">
+      <DependentUpon>SlideBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>

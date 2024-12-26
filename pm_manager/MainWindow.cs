@@ -2,27 +2,41 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using pm_manager.Components;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
+using System.Runtime.Remoting.Lifetime;
 
 namespace pm_manager
 {
     public partial class MainWindow : Form
     {
         private ViewWindow view;
+
         private SettingsModel settings;
         private List<string> imagesFolders;
 
-        private List<string> images = new List<string>();
+        // UI
+        private readonly Timer UpdateTimer;
 
-        private PlayListHook playlistHook = PlayListHook.Instance;
-        private DataViewHook dataViewHook = DataViewHook.Instance;
+        // playlist buffer
+        private int playlistCount;
+
+        // tabs data
+        private List<string> images = new List<string>();
+        private List<string> songs = new List<string>();
+
 
         // hooks 
         protected Image DataViewImage;
+        private PlayListHook playlistHook = PlayListHook.Instance;
+        private DataViewHook dataViewHook = DataViewHook.Instance;
 
         public MainWindow()
         {
+            // BUG: this stays here because visual sudtio keeps removing this from the design file :(   this.PreviewPanel = new DataView(true);
             // Window configuration
             InitializeComponent();
+            //InitializePreviewPanel();
             this.Size = new Size(1366, 768);
             this.FormBorderStyle = FormBorderStyle.Sizable;
             // settings configuration
@@ -33,30 +47,46 @@ namespace pm_manager
 
             // ui components initialization
             this.Render_ImageViewContainer();
+            this.Render_LyricViewContainer();
+
+
+            this.UpdateTimer = new Timer { Interval = 33 };
+            this.UpdateTimer.Tick += (sender, e) => this.Update_UI();
+            this.UpdateTimer.Start();
+
         }
 
         // helper methods
-        protected void Get_Images_from_folders()
+        private void Get_Images_from_folders()
         {
             this.imagesFolders = this.settings.Get_Settings().ImageFolders;
-            ImageSearch search_helper = new ImageSearch();
 
             foreach (string path in this.imagesFolders) {
-                string[] data = search_helper.Get_Images_Paths(path);
+                string[] data = new SearchFuncs().Search_dir(SearchTypes.Image,path);
 
-                foreach(string item in data)
+                for (int index = 0; index < data.Length; index++)
                 {
-                    this.images.Add(item);
+                    this.images.Add(data[index]);
                 }
             }
         }
 
+        private void Get_Songs_from_folder()
+        {
+            string songsFolder = this.settings.Get_Settings().LyricsPath;
+
+            string[] data = new SearchFuncs().Search_dir(SearchTypes.Text, songsFolder);
+
+            foreach (string file in data)
+            {
+                this.songs.Add(file);
+            }
+        }
+
         // ui methods
-
         // tab view components
-
         // image view container
-        protected void Render_ImageViewContainer()
+        private void Render_ImageViewContainer()
         {
             this.Get_Images_from_folders();
             this.ImagesViewContainer.Controls.Clear();
@@ -75,27 +105,58 @@ namespace pm_manager
             }
         }
 
+        // lyric view conttainer
+        private void Render_LyricViewContainer() 
+        {
+            this.Get_Songs_from_folder();
+            this.LyricViewContainer.Controls.Clear();
+
+            int yPosition = 0;
+            foreach (string songFilePath in this.songs)
+            {
+                LyricBtnContainer lyricBtn = new LyricBtnContainer();
+                lyricBtn.Location = new Point(0, yPosition);
+                lyricBtn.Width = this.LyricViewContainer.ClientSize.Width;
+                lyricBtn.Height = 30;
+                lyricBtn.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+                lyricBtn.LoadText(songFilePath);
+
+                this.LyricViewContainer.Controls.Add(lyricBtn);
+                yPosition += lyricBtn.Height + 3; // 3 pixels gap between buttons
+            }
+        }
+
+        private void Rerender_Playlist()
+        {
+            List<Slide> slides = this.playlistHook.get_slides();
+
+            if (this.playlistCount < slides.Count || this.playlistCount > slides.Count)
+            {
+                this.PreView.Controls.Clear();
+
+
+                int height = this.PreView.Height - 30;
+
+                for (int index = 0; index < slides.Count; index++)
+                {
+                    Slide slide = slides[index];
+
+                    SlideBox temp = new SlideBox()
+                    {
+                        Size = new Size(240, height),
+                        Location = new Point(index * 244, 0),
+                        SlideIndex=index
+                    };
+                    temp.set_text(slide.HeaderText, slide.ContentText);
+
+                    this.PreView.Controls.Add(temp);
+                }
+
+                this.playlistCount = slides.Count;
+            }
+        }
+
         // UI events
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void toolStripButton3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void controls_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-        
         private void Toggle_Window()
         {
             if (this.view.IsDisposed)
@@ -122,7 +183,7 @@ namespace pm_manager
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void toggleWindow_Click(object sender, EventArgs e)
         {
             this.Toggle_Window();
             Console.WriteLine("testing");
@@ -130,9 +191,25 @@ namespace pm_manager
             this.DataViewImage = test;
         }
 
+        private void LiveToggleBtn_Click(object sender, EventArgs e)
+        {
+            bool current = this.dataViewHook.toggle_isLive();
+            if (current)
+            {
+                this.LiveToggleBtn.ForeColor = Color.White;
+                this.LiveToggleBtn.BackColor = Color.Crimson;
+            }else
+            {
+                this.LiveToggleBtn.ForeColor = Color.Black;
+                this.LiveToggleBtn.BackColor = Color.Gainsboro;
+            }
+        }
+
+        // tab methods
+
+        // image view
         private void AddImageBtn_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("Help !");
             using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
             {
                 folderBrowserDialog.Description = "Select a Folder Containing Images";
@@ -149,18 +226,30 @@ namespace pm_manager
 
         }
 
-        private void LiveToggleBtn_Click(object sender, EventArgs e)
+        // lyric view
+        private void AddLyricBtn_Click(object sender, EventArgs e)
         {
-            bool current = this.dataViewHook.toggle_isLive();
-            if (current)
+            Console.WriteLine("sdawda");
+            using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
             {
-                this.LiveToggleBtn.ForeColor = Color.White;
-                this.LiveToggleBtn.BackColor = Color.Crimson;
-            }else
-            {
-                this.LiveToggleBtn.ForeColor = Color.Black;
-                this.LiveToggleBtn.BackColor = Color.Gainsboro;
+                folderBrowserDialog.Description = "Select a Folder Containing Lyrics";
+
+                if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string selectedFolderPath = folderBrowserDialog.SelectedPath;
+
+                    this.settings.Update_Setting<string>(SettingsFields.LyricsPath, selectedFolderPath);
+                    this.Render_LyricViewContainer();
+                }
             }
+        }
+
+
+        // ui 
+
+        private void Update_UI()
+        {
+            this.Rerender_Playlist();
         }
     }
 }

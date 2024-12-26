@@ -14,6 +14,7 @@ namespace pm_manager
     {
         public int? Index { get; set; }
         public List<Slide> Slides { get; set; }
+        public string BgSrc { get; set; }
     }
 
     public sealed class PlayListHook
@@ -38,21 +39,18 @@ namespace pm_manager
 
             return this.playlist.Index;
         }
-        public void set_index(int index)
+        public void set_index(int? index)
         {
-            if (this.playlist.Slides.Count - 1 > index)
-            {
                 this.playlist.Index = index;
-            }
         }
-        public void add_Slide(Slide slide)
+        public void add_slide(Slide slide)
         {
-            if (this.get_slide(slide.Id) != null)
-            {
-                return;
-            }
-
             this.playlist.Slides.Add(slide);
+        }
+
+        public void add_slides(List<Slide> slides)
+        {
+            this.playlist.Slides.AddRange(slides);
         }
 
         public Slide? get_slide(int index)
@@ -77,6 +75,11 @@ namespace pm_manager
             return null;
         }
 
+        public List<Slide> get_slides()
+        {
+            return this.playlist.Slides;
+        }
+
         // TODO: add slide update at some point
         public void delete_slide(int index)
         {
@@ -86,6 +89,15 @@ namespace pm_manager
         public void delete_slide(string id)
         {
             this.playlist.Slides.RemoveAll((slide) => slide.Id == id);
+        }
+    
+        public string get_BgSrc()
+        {
+            return this.playlist.BgSrc;
+        }
+        public void set_BgSrc(string image)
+        {
+            this.playlist.BgSrc = image;
         }
     }
 }

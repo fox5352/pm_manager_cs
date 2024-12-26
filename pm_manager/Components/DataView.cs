@@ -13,6 +13,9 @@ namespace pm_manager
         private PlayListHook playListHook = PlayListHook.Instance;
         private DataViewHook dataViewHook = DataViewHook.Instance;
 
+
+        private int bufferindex;
+
         public DataView(bool preViewPanel=false)
         {
             this.preview = preViewPanel;
@@ -113,18 +116,24 @@ namespace pm_manager
             if (this.preview || this.dataViewHook.get_isLive())
             {
                 var index = this.playListHook.get_index();
-                if (index.HasValue)
-                {
-                    var slide = this.playListHook.get_slide(index.Value);
-                    if (slide.HasValue)
-                    {
-                        this.Update_view(slide.Value);
-                    }
-                }
-                else
+                if (this.bufferindex != index)
                 {
 
-                    this.ClearLabels();
+                    if (index.HasValue && this.bufferindex != index)
+                    {
+                        // TODO: testing this feature after playlist section created
+                        Console.WriteLine("index changed rerender");
+                        this.bufferindex = index.Value;
+                        var slide = this.playListHook.get_slide(index.Value);
+                        if (slide.HasValue)
+                        {
+                            this.Update_view(slide.Value);
+                        }
+                    }
+                    else
+                    {
+                        this.ClearLabels();
+                    }
                 }
             }
         }
