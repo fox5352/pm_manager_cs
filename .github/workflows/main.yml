@@ -1,15 +1,12 @@
 name: Build and Publish WinForms App
 
 on:
-  # Trigger on pushes to specific branches
   push:
     branches:
-      - master    # Triggers when pushing to master branch
-      - main     # Also trigger on main if you use that instead
+      - master
+      - main
     tags:
-      - 'v*'     # Triggers when pushing any tag starting with 'v'
-  
-  # Allows manual trigger from GitHub UI
+      - 'v*'
   workflow_dispatch:
 
 permissions:
@@ -54,7 +51,31 @@ jobs:
     - name: Download .NET Framework 4.8 Offline Installer
       shell: powershell
       run: |
-        Invoke-WebRequest -Uri "https://download.microsoft.com/download/6/E/4/6E48E8AB-DC00-419E-9704-06DD46E5F81D/NDP48-x86-x64-AllOS-ENU.exe" -OutFile "ndp48-x86-x64-allos-enu.exe"
+        # New download URL for .NET Framework 4.8
+        $url = "https://go.microsoft.com/fwlink/?LinkId=2085155"
+        
+        # Add error handling for the download
+        try {
+          $ProgressPreference = 'SilentlyContinue'    # Makes the download faster
+          Write-Host "Downloading .NET Framework 4.8 offline installer..."
+          Invoke-WebRequest -Uri $url -OutFile "ndp48-x86-x64-allos-enu.exe"
+          
+          # Verify the download
+          if (Test-Path "ndp48-x86-x64-allos-enu.exe") {
+            $fileSize = (Get-Item "ndp48-x86-x64-allos-enu.exe").Length
+            if ($fileSize -lt 1MB) {
+              throw "Downloaded file is too small, might be corrupted"
+            }
+            Write-Host "Download completed successfully"
+          } else {
+            throw "Download failed - file not found"
+          }
+        }
+        catch {
+          Write-Host "Error downloading .NET Framework 4.8: $_"
+          Write-Host "Please consider adding the installer directly to your repository"
+          exit 1
+        }
     
     - name: Restore NuGet packages
       run: nuget restore pm_manager.sln
@@ -72,24 +93,57 @@ jobs:
       
     - name: Create Final Package
       run: |
-        # Create a directory for the complete package
         mkdir CompletePackage
-        # Copy the .NET Framework installer
         copy ndp48-x86-x64-allos-enu.exe CompletePackage\
-        # Copy your application files
         xcopy /E /I Release CompletePackage\Application\
-        # Create a simple batch installer
-        @echo @echo Installing .NET Framework 4.8... > CompletePackage\install.bat
-        @echo start /wait ndp48-x86-x64-allos-enu.exe /q /norestart >> CompletePackage\install.bat
-        @echo @echo Starting application... >> CompletePackage\install.bat
-        @echo start Application\PMManager.exe >> CompletePackage\install.bat
-        # Create readme
-        @echo This package includes: > CompletePackage\README.txt
-        @echo - .NET Framework 4.8 Offline Installer >> CompletePackage\README.txt
-        @echo - PM Manager Application >> CompletePackage\README.txt
-        @echo. >> CompletePackage\README.txt
-        @echo Installation Instructions: >> CompletePackage\README.txt
-        @echo 1. Run install.bat to install .NET Framework and launch the application >> CompletePackage\README.txt
+        
+        rem Create enhanced installer batch file
+        (
+          echo @echo off
+          echo echo Checking for .NET Framework 4.8...
+          echo reg query "HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full" /v Release 2^>nul ^| find "528040" ^>nul
+          echo if %%ERRORLEVEL%% == 0 ^(
+          echo     echo .NET Framework 4.8 is already installed.
+          echo ^) else ^(
+          echo     echo Installing .NET Framework 4.8...
+          echo     start /wait ndp48-x86-x64-allos-enu.exe /q /norestart
+          echo     if %%ERRORLEVEL%% == 0 ^(
+          echo         echo Installation completed successfully.
+          echo     ^) else ^(
+          echo         echo Installation failed with error code %%ERRORLEVEL%%
+          echo         pause
+          echo         exit /b %%ERRORLEVEL%%
+          echo     ^)
+          echo ^)
+          echo echo Starting application...
+          echo start Application\PMManager.exe
+        ) > CompletePackage\install.bat
+        
+        rem Create detailed readme
+        (
+          echo PM Manager Installation Package
+          echo ==============================
+          echo.
+          echo Contents:
+          echo ---------
+          echo 1. .NET Framework 4.8 Offline Installer
+          echo 2. PM Manager Application
+          echo.
+          echo Installation Instructions:
+          echo ------------------------
+          echo 1. Extract all files from this package
+          echo 2. Right-click install.bat and select "Run as administrator"
+          echo 3. The installer will:
+          echo    - Check if .NET Framework 4.8 is already installed
+          echo    - Install it if needed ^(no internet required^)
+          echo    - Launch the application automatically
+          echo.
+          echo Troubleshooting:
+          echo ---------------
+          echo - If you see any errors, try running install.bat as administrator
+          echo - The installer will pause on errors so you can read the message
+          echo - Installation logs can be found in %%TEMP%% directory
+        ) > CompletePackage\README.txt
       shell: cmd
       
     - name: Zip Package
@@ -98,7 +152,6 @@ jobs:
       shell: cmd
       
     - name: Create GitHub Release
-      id: create_release
       uses: softprops/action-gh-release@v1
       with:
         files: CompletePackage.zip
@@ -111,16 +164,25 @@ jobs:
           
           ## What's Changed
           * Added offline installer with .NET Framework 4.8
-          * Automated release from master branch
+          * Improved installation script with error handling
+          * Added detailed README with troubleshooting steps
           
           ## Installation (Offline)
           1. Download and extract CompletePackage.zip
-          2. Run install.bat - this will:
-             - Install .NET Framework 4.8 (if needed)
+          2. Run install.bat as administrator
+          3. The installer will automatically:
+             - Check for .NET Framework 4.8
+             - Install it if needed (no internet required)
              - Launch the application
           
           ### System Requirements
           - Windows 7 SP1 or later
           - No internet connection required!
+          
+          ### Troubleshooting
+          If you encounter any issues during installation:
+          1. Make sure to run install.bat as administrator
+          2. Check the README.txt file for detailed instructions
+          3. Installation logs can be found in the %TEMP% directory
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
