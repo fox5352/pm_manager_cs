@@ -78,6 +78,11 @@ namespace pm_manager
             return null;
         }
 
+        public List<Slide> get_slides()
+        {
+            return this.playlist.Slides;
+        }
+
         // TODO: add slide update at some point
         public void delete_slide(int index)
         {
