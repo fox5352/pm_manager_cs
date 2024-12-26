@@ -50,11 +50,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\LyricBtn.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Components\LyricBtn.Designer.cs">
       <DependentUpon>LyricBtn.cs</DependentUpon>
     </Compile>
+    <Compile Include="Lib\ClickManager.cs" />
     <Compile Include="Lib\DataTypes.cs" />
     <Compile Include="Components\DataView.cs">
       <SubType>UserControl</SubType>
