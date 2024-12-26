@@ -1,3 +1,21 @@
+name: Build and Publish WinForms App
+
+on:
+  # Trigger on pushes to specific branches
+  push:
+    branches:
+      - master    # Triggers when pushing to master branch
+      - main     # Also trigger on main if you use that instead
+    tags:
+      - 'v*'     # Triggers when pushing any tag starting with 'v'
+  
+  # Allows manual trigger from GitHub UI
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   build:
     runs-on: windows-latest
@@ -11,10 +29,12 @@ jobs:
       id: get_version
       shell: powershell
       run: |
+        # Try to get version from git tag
         $tag = git describe --tags --abbrev=0
         if ($tag) {
           $version = $tag.TrimStart('v')
         } else {
+          # Default to version from AssemblyInfo if no tag
           $assemblyFile = "pm_manager\Properties\AssemblyInfo.cs"
           $pattern = '\[assembly: AssemblyVersion\("(.*)"\)\]'
           $content = Get-Content $assemblyFile
@@ -36,124 +56,52 @@ jobs:
       run: |
         Invoke-WebRequest -Uri "https://download.microsoft.com/download/6/E/4/6E48E8AB-DC00-419E-9704-06DD46E5F81D/NDP48-x86-x64-AllOS-ENU.exe" -OutFile "ndp48-x86-x64-allos-enu.exe"
     
-    - name: Install WiX Toolset
-      run: |
-        nuget install WiX -Version 3.11.2
-        
     - name: Restore NuGet packages
       run: nuget restore pm_manager.sln
       
     - name: Build application
       run: msbuild pm_manager.sln /p:Configuration=Release /p:Platform="Any CPU" /p:TargetFrameworkVersion=v4.8
       
-    - name: Create Bundle Project
-      shell: powershell
+    - name: Create Release Folder
       run: |
-        # Create a WiX Bundle file (bundle.wxs)
-        @"
-        <?xml version="1.0" encoding="UTF-8"?>
-        <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
-             xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
-          
-          <Bundle Name="PM Manager with .NET Framework 4.8"
-                  Version="${{ steps.get_version.outputs.VERSION }}"
-                  Manufacturer="Your Company Name"
-                  UpgradeCode="PUT-BUNDLE-GUID-HERE">
-            
-            <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" />
-            
-            <Chain>
-              <!-- .NET Framework 4.8 -->
-              <ExePackage
-                  Id="NetFx48"
-                  Cache="yes"
-                  Compressed="yes"
-                  PerMachine="yes"
-                  Permanent="yes"
-                  Vital="yes"
-                  SourceFile="ndp48-x86-x64-allos-enu.exe"
-                  InstallCommand="/q /norestart"
-                  DetectCondition="WixBundleInstalled OR (NetFx48FullVersion >= v4.8.0)">
-              </ExePackage>
-              
-              <!-- Your application's MSI -->
-              <MsiPackage
-                  Id="PMManagerMsi"
-                  SourceFile="PMManager.msi"
-                  Compressed="yes"
-                  Vital="yes">
-                <MsiProperty Name="INSTALLDIR" Value="[InstallFolder]" />
-              </MsiPackage>
-            </Chain>
-          </Bundle>
-        </Wix>
-        "@
-
-        # Create a WiX project file (product.wxs) for your application
-        @"
-        <?xml version="1.0" encoding="UTF-8"?>
-        <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-          <Product Id="*" 
-                   Name="PM Manager" 
-                   Language="1033" 
-                   Version="${{ steps.get_version.outputs.VERSION }}"
-                   Manufacturer="Your Company Name" 
-                   UpgradeCode="PUT-GUID-HERE">
-            
-            <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
-            
-            <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
-            <MediaTemplate EmbedCab="yes" />
-            
-            <Directory Id="TARGETDIR" Name="SourceDir">
-              <Directory Id="ProgramFilesFolder">
-                <Directory Id="INSTALLFOLDER" Name="PM Manager">
-                  <Component Id="MainExecutable" Guid="*">
-                    <File Id="PMManagerEXE" 
-                          Name="PMManager.exe" 
-                          Source="pm_manager\bin\Release\PMManager.exe" 
-                          KeyPath="yes">
-                      <Shortcut Id="startmenuPMManager" 
-                               Directory="ProgramMenuFolder" 
-                               Name="PM Manager"
-                               WorkingDirectory="INSTALLFOLDER" 
-                               Icon="PMManager.exe" 
-                               IconIndex="0" 
-                               Advertise="yes" />
-                    </File>
-                    <!-- Add additional files (DLLs, configs) here -->
-                  </Component>
-                </Directory>
-              </Directory>
-              
-              <Directory Id="ProgramMenuFolder" />
-            </Directory>
-            
-            <Feature Id="ProductFeature" Title="Main Product" Level="1">
-              <ComponentRef Id="MainExecutable" />
-            </Feature>
-            
-            <Icon Id="PMManager.exe" SourceFile="pm_manager\bin\Release\PMManager.exe" />
-          </Product>
-        </Wix>
-        "@
-    
-    - name: Build Installers
+        mkdir Release
+        copy pm_manager\bin\Release\*.exe Release\
+        copy pm_manager\bin\Release\*.config Release\
+        copy pm_manager\bin\Release\*.dll Release\
+      shell: cmd
+      
+    - name: Create Final Package
       run: |
-        # Build the MSI
-        "%WIX%bin\candle.exe" product.wxs
-        "%WIX%bin\light.exe" product.wixobj -out PMManager.msi
-        
-        # Build the Bundle (EXE)
-        "%WIX%bin\candle.exe" bundle.wxs -ext WixBalExtension
-        "%WIX%bin\light.exe" bundle.wixobj -ext WixBalExtension -out PMManagerSetup.exe
+        # Create a directory for the complete package
+        mkdir CompletePackage
+        # Copy the .NET Framework installer
+        copy ndp48-x86-x64-allos-enu.exe CompletePackage\
+        # Copy your application files
+        xcopy /E /I Release CompletePackage\Application\
+        # Create a simple batch installer
+        @echo @echo Installing .NET Framework 4.8... > CompletePackage\install.bat
+        @echo start /wait ndp48-x86-x64-allos-enu.exe /q /norestart >> CompletePackage\install.bat
+        @echo @echo Starting application... >> CompletePackage\install.bat
+        @echo start Application\PMManager.exe >> CompletePackage\install.bat
+        # Create readme
+        @echo This package includes: > CompletePackage\README.txt
+        @echo - .NET Framework 4.8 Offline Installer >> CompletePackage\README.txt
+        @echo - PM Manager Application >> CompletePackage\README.txt
+        @echo. >> CompletePackage\README.txt
+        @echo Installation Instructions: >> CompletePackage\README.txt
+        @echo 1. Run install.bat to install .NET Framework and launch the application >> CompletePackage\README.txt
+      shell: cmd
+      
+    - name: Zip Package
+      run: |
+        7z a -tzip CompletePackage.zip .\CompletePackage\*
+      shell: cmd
       
     - name: Create GitHub Release
       id: create_release
       uses: softprops/action-gh-release@v1
       with:
-        files: |
-          PMManagerSetup.exe
+        files: CompletePackage.zip
         name: Release v${{ steps.get_version.outputs.VERSION }}
         tag_name: v${{ steps.get_version.outputs.VERSION }}
         draft: false
@@ -162,15 +110,17 @@ jobs:
           Release v${{ steps.get_version.outputs.VERSION }}
           
           ## What's Changed
-          * Added offline installer that includes .NET Framework 4.8
+          * Added offline installer with .NET Framework 4.8
           * Automated release from master branch
           
-          ## Installation
-          1. Download PMManagerSetup.exe
-          2. Run the installer - it will automatically install .NET Framework 4.8 if needed
-          3. No internet connection required!
+          ## Installation (Offline)
+          1. Download and extract CompletePackage.zip
+          2. Run install.bat - this will:
+             - Install .NET Framework 4.8 (if needed)
+             - Launch the application
           
           ### System Requirements
           - Windows 7 SP1 or later
+          - No internet connection required!
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
