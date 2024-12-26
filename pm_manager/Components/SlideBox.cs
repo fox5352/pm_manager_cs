@@ -38,21 +38,40 @@ namespace pm_manager.Components
             this.ContentText.Text = content;
         }
 
-        private void SlideBox_Click(object sender, MouseEventArgs e)
+        private void toggle_slide()
         {
             int? idx = this.playListHook.get_index();
 
             if (idx == this.SlideIndex)
             {
                 this.playListHook.set_index(null);
-            }else
+            }
+            else
             {
                 this.playListHook.set_index(this.SlideIndex);
             }
         }
 
+        private void SlideBox_Click(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                // TODO: popup menu
+            } else
+            {
+                this.toggle_slide();
+            }
+        }
+
         private void SlideBox_DoubleClick(object sender, MouseEventArgs e) 
         {
+            // TODO: switch to slde Id when impl
+            if (this.SlideIndex.HasValue)
+            {
+                this.toggle_slide();
+                this.playListHook.delete_slide(this.SlideIndex.Value);
+            }
+            
         }
 
         private void Update_UI()
@@ -64,9 +83,14 @@ namespace pm_manager.Components
                 if (this.SlideIndex == index)
                 {
                     this.BackColor = Color.MediumTurquoise;
-                }else
+                    this.HeaderText.ForeColor = Color.White;
+                    this.ContentText.ForeColor = Color.White;
+                }
+                else
                 {
                     this.BackColor = Color.White;
+                    this.HeaderText.ForeColor = Color.Black;
+                    this.ContentText.ForeColor = Color.Black;
                 }
                 this.bufferPlaylistIndex = index;
             }
