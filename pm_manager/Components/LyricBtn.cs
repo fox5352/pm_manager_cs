@@ -23,6 +23,7 @@ namespace pm_manager.Components
         }
 
         private List<Slide> slides = new List<Slide>();
+
         public void LoadText(string path)
         {
             this.path = path;
@@ -41,8 +42,10 @@ namespace pm_manager.Components
 
             foreach (var slide in lyricSlides)
             {
+
                 Slide temp = new Slide()
                 {
+                    Type = SlideType.Song,
                     HeaderText = this.name,
                     ContentText = slide,
                 };
@@ -54,12 +57,20 @@ namespace pm_manager.Components
         private void LyricBtn_Click(object sender, MouseEventArgs e) 
         {
             Console.WriteLine("Singal Click");
-        }
-        private void LyricBtn_DoubleClick(object sender, MouseEventArgs e) 
-        {
-            Console.WriteLine("Double Click");
+            if (e.Button == MouseButtons.Right) {
+                // TODO: pop-up menu for song
+            } else {
+                // TODO: check for drag
+            }
         }
 
+        private void LyricBtn_DoubleClick(object sender, MouseEventArgs e)
+        {
+            foreach (var slide in this.slides)
+            {
+                this.playListHook.add_Slide(slide);
+            }
+        }
 
         // TODO: add on drag event for this comp
     }
