@@ -39,21 +39,18 @@ namespace pm_manager
 
             return this.playlist.Index;
         }
-        public void set_index(int index)
+        public void set_index(int? index)
         {
-            if (this.playlist.Slides.Count - 1 > index)
-            {
                 this.playlist.Index = index;
-            }
         }
-        public void add_Slide(Slide slide)
+        public void add_slide(Slide slide)
         {
-            if (this.get_slide(slide.Id) != null)
-            {
-                return;
-            }
-
             this.playlist.Slides.Add(slide);
+        }
+
+        public void add_slides(List<Slide> slides)
+        {
+            this.playlist.Slides.AddRange(slides);
         }
 
         public Slide? get_slide(int index)

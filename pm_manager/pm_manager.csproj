@@ -55,6 +55,12 @@
     <Compile Include="Components\LyricBtn.Designer.cs">
       <DependentUpon>LyricBtn.cs</DependentUpon>
     </Compile>
+    <Compile Include="Components\SlideBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Components\SlideBox.Designer.cs">
+      <DependentUpon>SlideBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Lib\ClickManager.cs" />
     <Compile Include="Lib\DataTypes.cs" />
     <Compile Include="Components\DataView.cs">
@@ -95,6 +101,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Components\LyricBtn.resx">
       <DependentUpon>LyricBtn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Components\SlideBox.resx">
+      <DependentUpon>SlideBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>

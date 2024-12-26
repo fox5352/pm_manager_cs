@@ -30,7 +30,6 @@ namespace pm_manager.Components
             this.name = path.Split('\\').Last().Split('.').First();
             this.Text = this.name;
             this.Load_file();
-
         }
 
         private void Load_file()
@@ -38,7 +37,7 @@ namespace pm_manager.Components
             string fileData = File.ReadAllText(this.path);
 
             fileData = fileData.Replace("\r\n", "\n");
-            string[] lyricSlides = fileData.Split(new[] { "\n\n" }, StringSplitOptions.None);
+            string[] lyricSlides = fileData.Trim().Split(new[] { "\n\n" }, StringSplitOptions.None);
 
             foreach (var slide in lyricSlides)
             {
@@ -47,7 +46,7 @@ namespace pm_manager.Components
                 {
                     Type = SlideType.Song,
                     HeaderText = this.name,
-                    ContentText = slide,
+                    ContentText = slide.Trim(),
                 };
 
                 this.slides.Add(temp);
@@ -66,12 +65,10 @@ namespace pm_manager.Components
 
         private void LyricBtn_DoubleClick(object sender, MouseEventArgs e)
         {
-            foreach (var slide in this.slides)
-            {
-                this.playListHook.add_Slide(slide);
-            }
+            this.playListHook.add_slides(this.slides);
         }
 
         // TODO: add on drag event for this comp
+
     }
 }

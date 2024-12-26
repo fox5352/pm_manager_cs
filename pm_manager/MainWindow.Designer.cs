@@ -134,6 +134,7 @@
             // 
             // PreView
             // 
+            this.PreView.AutoScroll = true;
             this.PreView.AccessibleName = "playlistHook panel";
             this.PreView.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.PreView.Location = new System.Drawing.Point(0, 308);
@@ -245,8 +246,8 @@
             this.LyricViewContainer.AutoScroll = true;
             this.LyricViewContainer.BackColor = System.Drawing.Color.Gainsboro;
             this.LyricViewContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LyricViewContainer.Name = "LyricViewContainer";
             this.LyricViewContainer.Location = new System.Drawing.Point(0, 28);
+            this.LyricViewContainer.Name = "LyricViewContainer";
             this.LyricViewContainer.Size = new System.Drawing.Size(533, 206);
             this.LyricViewContainer.TabIndex = 1;
             // 

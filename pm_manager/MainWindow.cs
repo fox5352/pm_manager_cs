@@ -3,14 +3,23 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using pm_manager.Components;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
+using System.Runtime.Remoting.Lifetime;
 
 namespace pm_manager
 {
     public partial class MainWindow : Form
     {
         private ViewWindow view;
+
         private SettingsModel settings;
         private List<string> imagesFolders;
+
+        // UI
+        private readonly Timer UpdateTimer;
+
+        // playlist buffer
+        private int playlistCount;
 
         // tabs data
         private List<string> images = new List<string>();
@@ -24,7 +33,7 @@ namespace pm_manager
 
         public MainWindow()
         {
-            // BUG: this stays here because visual sudtio keeps removing this from the design file :( this.PreviewPanel = new DataView(true);
+            // BUG: this stays here because visual sudtio keeps removing this from the design file :(   this.PreviewPanel = new DataView(true);
             // Window configuration
             InitializeComponent();
             //InitializePreviewPanel();
@@ -39,6 +48,12 @@ namespace pm_manager
             // ui components initialization
             this.Render_ImageViewContainer();
             this.Render_LyricViewContainer();
+
+
+            this.UpdateTimer = new Timer { Interval = 33 };
+            this.UpdateTimer.Tick += (sender, e) => this.Update_UI();
+            this.UpdateTimer.Start();
+
         }
 
         // helper methods
@@ -71,7 +86,7 @@ namespace pm_manager
         // ui methods
         // tab view components
         // image view container
-        protected void Render_ImageViewContainer()
+        private void Render_ImageViewContainer()
         {
             this.Get_Images_from_folders();
             this.ImagesViewContainer.Controls.Clear();
@@ -91,7 +106,7 @@ namespace pm_manager
         }
 
         // lyric view conttainer
-        protected void Render_LyricViewContainer() 
+        private void Render_LyricViewContainer() 
         {
             this.Get_Songs_from_folder();
             this.LyricViewContainer.Controls.Clear();
@@ -108,6 +123,36 @@ namespace pm_manager
 
                 this.LyricViewContainer.Controls.Add(lyricBtn);
                 yPosition += lyricBtn.Height + 3; // 3 pixels gap between buttons
+            }
+        }
+
+        private void Rerender_Playlist()
+        {
+            List<Slide> slides = this.playlistHook.get_slides();
+
+            if (this.playlistCount < slides.Count || this.playlistCount > slides.Count)
+            {
+                this.PreView.Controls.Clear();
+
+
+                int height = this.PreView.Height - 30;
+
+                for (int index = 0; index < slides.Count; index++)
+                {
+                    Slide slide = slides[index];
+
+                    SlideBox temp = new SlideBox()
+                    {
+                        Size = new Size(240, height),
+                        Location = new Point(index * 244, 0),
+                        SlideIndex=index
+                    };
+                    temp.set_text(slide.HeaderText, slide.ContentText);
+
+                    this.PreView.Controls.Add(temp);
+                }
+
+                this.playlistCount = slides.Count;
             }
         }
 
@@ -197,6 +242,14 @@ namespace pm_manager
                     this.Render_LyricViewContainer();
                 }
             }
+        }
+
+
+        // ui 
+
+        private void Update_UI()
+        {
+            this.Rerender_Playlist();
         }
     }
 }
